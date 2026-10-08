@@ -49,8 +49,8 @@ while true; do
     printf "Choix [1/2] : "
     ask
     case "$REPLY" in
-        1) UNIT="minute(s)"; FACTOR=60; MAX=10080; break ;;
-        2) UNIT="heure(s)"; FACTOR=3600; MAX=168; break ;;
+        1) UNIT="minute(s)"; SUFFIX=m; MAX=10080; break ;;
+        2) UNIT="heure(s)"; SUFFIX=h; MAX=168; break ;;
         *) info "Saisis 1 ou 2." ;;
     esac
 done
@@ -65,7 +65,7 @@ while true; do
     info "Saisis un entier valide."
 done
 
-SECONDS_DELAY=$((VALUE * FACTOR))
+DELAY_SPEC="${VALUE}${SUFFIX}"
 info ""
 info "-------------------- RECAPITULATIF --------------------"
 info "Delai choisi : $VALUE $UNIT"
@@ -109,12 +109,12 @@ cat > "$TMP_START" <<'TRIGGER'
 #!/bin/bash
 # screensaver-start - Batocera 42 / 43.1
 STATE=/tmp/shutdown.screensaver
-DELAY_SECONDS=__SECONDS__
+DELAY=__DELAY__
 
 if [[ "$1" == --worker ]]; then
     [[ $# -eq 2 ]] || exit 2
     token="$2"
-    sleep "$DELAY_SECONDS" || exit 0
+    sleep "$DELAY" || exit 0
     [[ -f "$STATE" ]] || exit 0
     pid="" active_token=""
     read -r pid active_token < "$STATE" || exit 0
@@ -162,14 +162,14 @@ fi
 exit 0
 CANCEL
 
-sed -i "s/^DELAY_SECONDS=__SECONDS__$/DELAY_SECONDS=$SECONDS_DELAY/" "$TMP_START"
+sed -i "s/^DELAY=__DELAY__$/DELAY=$DELAY_SPEC/" "$TMP_START"
 chmod 755 "$TMP_START" "$TMP_STOP"
 mv -f -- "$TMP_START" "$START"
 mv -f -- "$TMP_STOP" "$STOP"
 
 info "[5/5] Verification des permissions, du delai et de la syntaxe..."
 [[ -x "$START" && -x "$STOP" ]] || fail "Permissions incorrectes."
-grep -q "^DELAY_SECONDS=$SECONDS_DELAY$" "$START" || fail "Delai incorrect."
+grep -q "^DELAY=$DELAY_SPEC$" "$START" || fail "Delai incorrect."
 bash -n "$START" "$STOP" || fail "Erreur de syntaxe."
 info "  [OK] Scripts executables et delai enregistre."
 info ""
