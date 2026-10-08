@@ -1,196 +1,235 @@
 #!/bin/bash
-# Installe le service clavier_fr pour Batocera 42 (Sway / AZERTY).
-# Aucun fichier de /etc ou de /boot n'est modifie.
+# Installateur AZERTY Batocera 42 - hors ligne
+# Services Sway (swaymsg ou sway) / X11 (setxkbmap)
 set -euo pipefail
 
-SERVICE_NAME="clavier_fr"
-SERVICE_DIR="/userdata/system/services"
-SERVICE_FILE="$SERVICE_DIR/$SERVICE_NAME"
-LOG_FILE="/userdata/logs/clavier_fr.log"
-PID_FILE="/run/clavier_fr.pid"
+SERVICE_NAME=clavier_fr
+SERVICE_PATH=/userdata/system/services/clavier_fr
+LOG=/userdata/logs/clavier_fr.log
 
-say() { printf '%s\n' "$*"; }
+info() { printf '%s\n' "$*"; }
 confirm() {
     local answer
-    if [ ! -r /dev/tty ]; then
-        say "[ERREUR] Confirmation impossible sans terminal interactif."
-        exit 1
-    fi
-    read -r -p "$1 [o/N] : " answer < /dev/tty || true
+    read -r -p "$1 [o/N] : " answer < /dev/tty || return 1
     case "${answer,,}" in o|oui) return 0 ;; *) return 1 ;; esac
 }
 
-uninstall() {
-    say "============================================"
-    say "  DESINSTALLATION DU CLAVIER AZERTY"
-    say "============================================"
-    if ! confirm "Supprimer le service $SERVICE_NAME ?"; then
-        say "Annule : aucune modification."
-        return 0
-    fi
-    say "[1/3] Arret du service..."
-    batocera-services stop "$SERVICE_NAME" 2>/dev/null || true
-    say "[2/3] Desactivation du demarrage automatique..."
-    batocera-services disable "$SERVICE_NAME" 2>/dev/null || true
-    say "[3/3] Suppression du fichier de service..."
-    rm -f "$SERVICE_FILE"
-    say "Desinstallation terminee. Le journal reste dans $LOG_FILE"
-    say "Le clavier actuel reste inchange jusqu'au prochain lancement de Sway."
-}
-
 if [ "$(id -u)" -ne 0 ]; then
-    say "[ERREUR] Cet installateur doit etre lance en root sur Batocera."
+    info '[ERREUR] Connecte-toi en root sur Batocera.'
+    exit 1
+fi
+if ! command -v batocera-services >/dev/null 2>&1; then
+    info '[ERREUR] La commande batocera-services est absente.'
     exit 1
 fi
 
-if [ "${1:-}" = "--uninstall" ]; then
-    uninstall
+if [ "${1:-}" = --uninstall ]; then
+    info 'Desinstallation du service clavier_fr.'
+    if confirm 'Confirmer la desinstallation ?'; then
+        batocera-services stop "$SERVICE_NAME" 2>/dev/null || true
+        batocera-services disable "$SERVICE_NAME" 2>/dev/null || true
+        rm -f "$SERVICE_PATH"
+        info '[OK] Service supprime. Reglages system.kblayout et journal conserves.'
+    else
+        info 'Annule.'
+    fi
     exit 0
 fi
-if [ "${1:-}" != "" ]; then
-    say "Usage : bash install-clavier-azerty.sh [--uninstall]"
+if [ $# -ne 0 ]; then
+    info 'Usage : bash install-clavier-azerty-v2.sh [--uninstall]'
     exit 2
 fi
 
-say "============================================"
-say "  INSTALLATEUR CLAVIER AZERTY - BATOCERA 42"
-say "============================================"
-say "- Service au demarrage : $SERVICE_NAME"
-say "- Clavier graphique : Francais (AZERTY)"
-say "- Explorateur F1 et applications sous Sway"
-say "- Aucun changement dans /etc ni /boot"
-say ""
-
-if ! command -v batocera-services >/dev/null 2>&1; then
-    say "[ERREUR] batocera-services est introuvable. Installation annulee."
+info '=============================================='
+info '  CLAVIER AZERTY - BATOCERA 42 (version 2)'
+info '=============================================='
+info 'Explorateur F1 et applications graphiques'
+info 'Aucun fichier de /etc, /boot ou overlay modifie'
+info 'Service au demarrage avec journal de diagnostic'
+info ''
+info '[DIAGNOSTIC] Commandes detectees :'
+for cmd in swaymsg sway setxkbmap; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        info "  $cmd : $(command -v "$cmd")"
+    else
+        info "  $cmd : absent"
+    fi
+done
+if ! command -v swaymsg >/dev/null 2>&1 \
+   && ! command -v sway >/dev/null 2>&1 \
+   && ! command -v setxkbmap >/dev/null 2>&1; then
+    info '[ERREUR] Aucune commande graphique utilisable.'
+    info 'Aucune modification effectuee.'
     exit 1
 fi
-if ! command -v swaymsg >/dev/null 2>&1; then
-    say "[ERREUR] swaymsg est introuvable. La session Sway est necessaire."
-    exit 1
-fi
-if ! confirm "Installer ou mettre a jour le service AZERTY ?"; then
-    say "Installation annulee : aucune modification."
+info ''
+if ! confirm 'Installer le service clavier_fr ?'; then
+    info 'Installation annulee.'
     exit 0
 fi
 
-say "[1/5] Creation des dossiers..."
-mkdir -p "$SERVICE_DIR" "$(dirname "$LOG_FILE")"
-
-say "[2/5] Arret de l'ancienne version, si presente..."
-if [ -f "$SERVICE_FILE" ]; then
-    batocera-services stop "$SERVICE_NAME" 2>/dev/null || true
-    backup="/userdata/system/clavier_fr.backup.$(date +%Y%m%d-%H%M%S)"
-    cp -p "$SERVICE_FILE" "$backup"
-    say "      Sauvegarde : $backup"
+info '[1/5] Preparation...'
+mkdir -p /userdata/system/services /userdata/logs
+if [ -f "$SERVICE_PATH" ]; then
+    info '[2/5] Arret et sauvegarde de la version precedente...'
+    batocera-services stop "$SERVICE_NAME" >/dev/null 2>&1 || true
+    cp -p "$SERVICE_PATH" "/userdata/system/clavier_fr.bak.$(date +%Y%m%d-%H%M%S)"
+else
+    info '[2/5] Aucune ancienne version presente.'
 fi
 
-say "[3/5] Installation du service Sway..."
-cat > "$SERVICE_FILE" <<'SERVICE'
+info '[3/5] Installation du service...'
+cat > "$SERVICE_PATH" <<'SERVICE'
 #!/bin/bash
-# Service Batocera : mise en AZERTY des claviers Sway.
-# Attend le demarrage de Sway et reapplique le reglages apres relancement.
-LOG="/userdata/logs/clavier_fr.log"
-PID="/run/clavier_fr.pid"
+# Service clavier_fr pour Batocera 42
+LOG=/userdata/logs/clavier_fr.log
+PID_FILE=/run/clavier_fr.pid
 
-log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG"; }
+log() {
+    mkdir -p /userdata/logs
+    printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG"
+}
 
-find_socket() {
-    local s
-    for s in /run/sway-ipc.*.sock /var/run/sway-ipc.*.sock /run/user/*/sway-ipc.*.sock; do
-        if [ -S "$s" ]; then
-            printf '%s\n' "$s"
+get_sway_socket() {
+    local sock
+    for sock in /run/sway-ipc.*.sock /var/run/sway-ipc.*.sock /run/user/*/sway-ipc.*.sock; do
+        if [ -S "$sock" ]; then
+            printf '%s\n' "$sock"
             return 0
         fi
     done
     return 1
 }
 
+apply_fr_sway() {
+    local sock="$1" result
+    if command -v swaymsg >/dev/null 2>&1; then
+        result="$(SWAYSOCK="$sock" swaymsg -s "$sock" 'input type:keyboard xkb_layout fr' 2>&1)" || {
+            log "swaymsg a echoue : ${result:0:240}"
+            return 1
+        }
+    elif command -v sway >/dev/null 2>&1; then
+        # Commande de controle disponible sur certaines versions Batocera.
+        result="$(SWAYSOCK="$sock" sway input type:keyboard xkb_layout fr 2>&1)" || {
+            log "sway a echoue : ${result:0:240}"
+            return 1
+        }
+    else
+        return 1
+    fi
+    if printf '%s' "$result" | grep -Eq '"success"[[:space:]]*:[[:space:]]*true'; then
+        log 'AZERTY active via Sway.'
+        return 0
+    fi
+    log "Reponse Sway non confirmee : ${result:0:240}"
+    return 1
+}
+
+apply_fr_x11() {
+    local display result
+    command -v setxkbmap >/dev/null 2>&1 || return 1
+    for display in "${DISPLAY:-}" :0 :0.0 :1; do
+        [ -n "$display" ] || continue
+        result="$(DISPLAY="$display" setxkbmap -display "$display" fr 2>&1)" && {
+            log "AZERTY active via X11 ($display)."
+            return 0
+        }
+    done
+    return 1
+}
+
+monitor() {
+    local socket previous_socket='' previous_mode='' last_try=0 tick=0 last_error=0
+    trap 'rm -f "$PID_FILE"' EXIT
+    log 'Demarrage de la surveillance du clavier.'
+    while :; do
+        socket="$(get_sway_socket || true)"
+        # Ne lancer Sway que lorsqu'un socket actif existe.
+        if [ -n "$socket" ] && {
+             [ "$socket" != "$previous_socket" ] || [ "$previous_mode" != sway ] || [ "$tick" -ge 6 ];
+        }; then
+            if apply_fr_sway "$socket"; then
+                previous_socket="$socket"
+                previous_mode=sway
+                tick=0
+            else
+                previous_mode=''
+            fi
+        elif [ -z "$socket" ] && {
+              [ "$previous_mode" != x11 ] || [ "$tick" -ge 6 ];
+        }; then
+            if apply_fr_x11; then
+                previous_mode=x11
+                tick=0
+            else
+                previous_mode=''
+                if [ "$last_error" -eq 0 ]; then
+                    log 'Session graphique non encore prete ou commande indisponible.'
+                    last_error=1
+                fi
+            fi
+        fi
+        if [ -n "$previous_mode" ]; then last_error=0; fi
+        tick=$((tick + 1))
+        sleep 5
+    done
+}
+
 case "${1:-}" in
     start)
-        if [ -s "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then
+        if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
             exit 0
         fi
-        /bin/bash "$0" _monitor </dev/null >/dev/null 2>&1 &
-        echo "$!" > "$PID"
+        bash "$0" _monitor </dev/null >/dev/null 2>&1 &
+        echo "$!" > "$PID_FILE"
         ;;
     _monitor)
-        mkdir -p "$(dirname "$LOG")"
-        log "Service demarre : attente de Sway."
-        trap 'rm -f "$PID"' EXIT
-        last_socket=""
-        cycles=6
-        error_reported=0
-        while :; do
-            socket="$(find_socket || true)"
-            if [ -n "$socket" ] && { [ "$socket" != "$last_socket" ] || [ "$cycles" -ge 6 ]; }; then
-                result="$(SWAYSOCK="$socket" swaymsg -s "$socket" 'input type:keyboard xkb_layout fr' 2>&1)"
-                if printf '%s\n' "$result" | grep -Eq '"success"[[:space:]]*:[[:space:]]*true'; then
-                    if [ "$socket" != "$last_socket" ] || [ "$error_reported" -eq 1 ]; then
-                        log "AZERTY applique (socket : $socket)."
-                    fi
-                    last_socket="$socket"
-                    cycles=0
-                    error_reported=0
-                else
-                    if [ "$error_reported" -eq 0 ]; then
-                        log "Echec provisoire Sway : $result"
-                    fi
-                    last_socket=""
-                    cycles=6
-                    error_reported=1
-                fi
-            elif [ -z "$socket" ]; then
-                last_socket=""
-            fi
-            cycles=$((cycles + 1))
-            sleep 5
-        done
+        monitor
         ;;
     stop)
-        if [ -s "$PID" ]; then
-            pid="$(cat "$PID")"
+        if [ -s "$PID_FILE" ]; then
+            pid="$(cat "$PID_FILE")"
             kill "$pid" 2>/dev/null || true
         fi
-        rm -f "$PID"
-        log "Service arrete (disposition courante non modifiee)."
+        rm -f "$PID_FILE"
+        log 'Arret du service.'
         ;;
     status)
-        if [ -s "$PID" ] && kill -0 "$(cat "$PID")" 2>/dev/null; then
-            echo "clavier_fr : actif (PID $(cat "$PID"))"
+        if [ -s "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+            printf 'clavier_fr : actif (PID %s)\n' "$(cat "$PID_FILE")"
         else
-            echo "clavier_fr : arrete"
+            echo 'clavier_fr : arrete'
             exit 1
         fi
         ;;
     *)
-        echo "Usage : $0 {start|stop|status}"
+        echo 'Usage : clavier_fr {start|stop|status}'
         exit 2
         ;;
 esac
 SERVICE
-chmod +x "$SERVICE_FILE"
-bash -n "$SERVICE_FILE"
+chmod +x "$SERVICE_PATH"
+bash -n "$SERVICE_PATH"
 
-say "[4/5] Activation au demarrage..."
-if ! batocera-services enable "$SERVICE_NAME"; then
-    say "[ERREUR] Impossible d'activer le service automatiquement."
-    exit 1
+info '[4/5] Configuration de Batocera...'
+if command -v batocera-settings-set >/dev/null 2>&1; then
+    batocera-settings-set system.kblayout fr || info '[AVERTISSEMENT] system.kblayout non applique.'
 fi
+batocera-services enable "$SERVICE_NAME"
 
-say "[5/5] Demarrage immediat du service..."
+info '[5/5] Lancement du service...'
 if ! batocera-services start "$SERVICE_NAME"; then
-    say "[AVERTISSEMENT] Demarrage immediat indisponible : reessaie apres redemarrage."
+    info '[AVERTISSEMENT] Service non demarre immediatement.'
+    info "Essai manuel : $SERVICE_PATH start"
 fi
 
-say ""
-say "============================================"
-say "  INSTALLATION TERMINEE"
-say "============================================"
-say "Service : $SERVICE_FILE"
-say "Journal : $LOG_FILE"
-say "Verification : $SERVICE_FILE status"
-say "Dernieres lignes du journal : tail -n 20 $LOG_FILE"
-say "Desinstallation : bash install-clavier-azerty.sh --uninstall"
-say "Pour tester : ouvre F1 et tape a, z, q, w."
-say "La prise en compte peut demander quelques secondes."
+info ''
+info '=============================================='
+info '  INSTALLATION TERMINEE'
+info '=============================================='
+info "Service : $SERVICE_PATH"
+info "Journal : $LOG"
+info 'Verification : /userdata/system/services/clavier_fr status'
+info 'Diagnostic   : tail -n 20 /userdata/logs/clavier_fr.log'
+info 'Test : ouvrir F1 et saisir A Z Q W.'
+info 'Un redemarrage est conseille si le clavier reste QWERTY.'
