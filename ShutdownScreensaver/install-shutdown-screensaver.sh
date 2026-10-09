@@ -198,6 +198,20 @@ if ! cp -p "$T2" "$CANCEL"; then
 fi
 chmod 755 "$TRIGGER" "$CANCEL" || exit 1
 rm -f -- "$MARKER"
+# Conserver les 3 dernieres sauvegardes de chaque script apres succes.
+limiter_sauvegardes() {
+  local prefix="$1" fichier i
+  local -a archives=()
+  while IFS= read -r fichier; do archives+=("$fichier"); done < <(
+    find "$BACKUP" -maxdepth 1 -type f -name "$prefix" -printf '%f\n' | LC_ALL=C sort -r
+  )
+  for ((i=3; i<${#archives[@]}; i++)); do
+    rm -f -- "$BACKUP/${archives[i]}"
+  done
+}
+limiter_sauvegardes 'shutdown-trigger.sh.bak.*'
+limiter_sauvegardes 'shutdown-cancel.sh.bak.*'
+
 echo '[OK] Detection automatique installee.'
 echo "[OK] DELAY=$DELAY_VALUE conserve."
 echo "[SAUVEGARDES] $BACKUP (suffixe $stamp)"
