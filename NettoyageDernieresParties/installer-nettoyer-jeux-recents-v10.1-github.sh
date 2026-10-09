@@ -8,6 +8,20 @@ SH_FILE="$PORTS_DIR/nettoyer-jeux-recents.sh"
 BACKUP_DIR="/userdata/system/backup-nettoyer-jeux-recents"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 
+# Conserver les 3 sauvegardes les plus recentes pour chaque script.
+limiter_sauvegardes() {
+    local prefix="$1" fichier
+    local -a archives=()
+    while IFS= read -r fichier; do archives+=("$fichier"); done < <(
+        find "$BACKUP_DIR" -maxdepth 1 -type f -name "$prefix" -printf '%f\n' | LC_ALL=C sort -r
+    )
+    local i
+    for ((i=3; i<${#archives[@]}; i++)); do
+        rm -f -- "$BACKUP_DIR/${archives[i]}"
+    done
+}
+
+
 echo
 echo "============================================================"
 echo " Installation GitHub - Nettoyer les jeux récents v10.1"
@@ -1517,6 +1531,9 @@ if ! python3 -m py_compile "$PY_FILE" 2>/tmp/nettoyer-jeux-recents-compile.err; 
 fi
 
 rm -f /tmp/nettoyer-jeux-recents-compile.err
+
+limiter_sauvegardes 'nettoyer-jeux-recents.py.*.bak'
+limiter_sauvegardes 'nettoyer-jeux-recents.sh.*.bak'
 
 echo "[6/6] Installation terminée."
 echo
