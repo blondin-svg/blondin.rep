@@ -5,7 +5,7 @@ set -u
 PORTS_DIR="/userdata/roms/ports"
 PY_FILE="$PORTS_DIR/nettoyer-jeux-recents.py"
 SH_FILE="$PORTS_DIR/nettoyer-jeux-recents.sh"
-BACKUP_DIR="/userdata/system/backup-nettoyer-jeux-recents"
+BACKUP_DIR="/userdata/saves/Installscripts/saves/NettoyageDernieresParties"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 
 # Conserver les 3 sauvegardes les plus recentes pour chaque script.
