@@ -14,7 +14,7 @@
 
 MO_FILE="/usr/share/locale/fr/LC_MESSAGES/emulationstation2.mo"
 
-BACKUP_DIR="/userdata/system/backup-menu-redemarrer"
+BACKUP_DIR="/userdata/saves/Installscripts/saves/Redemarrer"
 BACKUP_FILE="$BACKUP_DIR/emulationstation2.mo.original"
 
 TEMP_FILE="/tmp/emulationstation2.mo.new"
