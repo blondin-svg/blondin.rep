@@ -5,7 +5,7 @@ START_DIR=/userdata/system/configs/emulationstation/scripts/screensaver-start
 STOP_DIR=/userdata/system/configs/emulationstation/scripts/screensaver-stop
 TRIGGER="$START_DIR/shutdown-trigger.sh"
 CANCEL="$STOP_DIR/shutdown-cancel.sh"
-BACKUP=/userdata/system/backup-shutdown
+BACKUP=/userdata/saves/Installscripts/saves/ShutdownScreensaver
 STATE=/tmp/shutdown.screensaver
 MARKER=/tmp/batocera-screensaver-active
 
