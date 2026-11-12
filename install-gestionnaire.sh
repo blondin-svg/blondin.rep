@@ -44,3 +44,17 @@ else
   echo '[ERREUR] Le Gestionnaire installé ne correspond pas à la v3.0.17 TEST.' >&2
   exit 1
 fi
+
+# Mettre immédiatement la liste Ports à jour après l'installation SSH.
+# La commande de redémarrage d'EmulationStation est celle du Gestionnaire.
+if command -v batocera-es-swissknife >/dev/null 2>&1; then
+  echo '[INFO] Actualisation automatique d’EmulationStation...'
+  if batocera-es-swissknife --restart; then
+    echo '[OK] Redémarrage d’EmulationStation demandé.'
+  else
+    echo '[ATTENTION] Impossible d’actualiser automatiquement EmulationStation.'
+    echo '[INFO] Tu peux actualiser la liste des jeux manuellement.'
+  fi
+else
+  echo '[ATTENTION] EmulationStation non actualisé : outil de redémarrage absent.'
+fi
