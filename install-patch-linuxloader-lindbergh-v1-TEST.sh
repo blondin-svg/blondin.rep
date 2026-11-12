@@ -27,6 +27,7 @@ status(){
   fi
   [[ -f "$MANIFEST" ]] && say '[INFO] Ancien hook RAMBO conserve en sauvegarde.'
   [[ -f "$LOG" ]] && { say '[INFO] Dernieres operations :'; tail -n 8 "$LOG"; }
+  return 0
 }
 case "$MODE" in
   status|verify|verifier) status; exit 0 ;;
