@@ -257,8 +257,8 @@ def preflight():
         raise RuntimeError('Configuration Rclone introuvable : ' + str(RCLONE_CONFIG))
     if not os.path.isfile(RCLONE) or not os.access(RCLONE, os.X_OK):
         raise RuntimeError('Rclone introuvable : ' + RCLONE)
-    if TRIGGER.is_file() and MARKER not in TRIGGER.read_text(encoding='utf-8', errors='replace'):
-        raise RuntimeError('Protection extinction absente du script actif : relancer l installateur avant toute sauvegarde.')
+    if not TRIGGER.is_file() or MARKER not in TRIGGER.read_text(encoding='utf-8', errors='replace'):
+        raise RuntimeError('Protection extinction V3 absente : installer la protection avant toute sauvegarde.')
     if TRIGGER.is_file() and not shutil.which('flock'):
         raise RuntimeError('Commande flock absente. Protection contre extinction indisponible.')
     res = subprocess.run([RCLONE, 'listremotes', '--config', str(RCLONE_CONFIG)],
