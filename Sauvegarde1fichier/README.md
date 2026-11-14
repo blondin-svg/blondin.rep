@@ -1,18 +1,20 @@
-# Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v2.0
+# Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v2.0.1
 
 Outil de sauvegarde manuelle de dossiers Batocera 44 vers un compte **1fichier.com** au moyen de Rclone.
 
 ## Installation depuis GitHub
 
-Sur une machine **Batocera 44 où une version antérieure de Sauvegarde 1fichier est déjà installée**, ouvrir une session SSH root et exécuter :
+Sur **Batocera 44**, que Sauvegarde 1fichier soit déjà présent ou non, ouvrir une session SSH root et exécuter :
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install.sh | bash
 ```
 
-L'installateur télécharge la version 2.0 depuis ce dépôt, contrôle son **SHA-256**, arrête EmulationStation, effectue la mise à jour sans écraser les dossiers configurés, puis lance un **redémarrage complet de Batocera** uniquement en cas de réussite. Si l'installation échoue après l'arrêt d'EmulationStation, celui-ci est relancé.
+L'installateur télécharge la version **2.0.1** depuis ce dépôt, contrôle son **SHA-256**, arrête EmulationStation, installe le programme ou met à jour l'installation existante **sans écraser les dossiers configurés**, puis lance un **redémarrage complet de Batocera** uniquement en cas de réussite. Si l'installation échoue après l'arrêt d'EmulationStation, celui-ci est relancé.
 
-**Prérequis** : installation précédente présente, protection de l'extinction V3 déjà en place et remote Rclone `1fichier:` déjà configuré. Ce script est une **mise à jour**, et non un premier installateur sur machine vierge. Aucun transfert n'est lancé par l'installation. Ne jamais publier sa clé API.
+**Première installation** : le logiciel, le lanceur Ports, les visuels, la configuration manette et un fichier `dossiers.json` vide sont créés. La protection d'extinction V3 et le compte distant Rclone `1fichier:` ne sont **pas** installés ni configurés par ce script. Il faut les préparer séparément **avant la première sauvegarde**. L'application **refuse de lancer un transfert** tant que la garde d'extinction V3 est absente. Aucun transfert n'est lancé pendant l'installation. Ne jamais publier sa clé API.
+
+**Mise à jour** : `dossiers.json`, les journaux, le compte Rclone, les préférences ntfy et les fichiers d'extinction sont conservés. Une installation partielle ou une version inconnue de `app.py` provoque un arrêt de sécurité, sans écrasement.
 
 ## Nouveau menu principal v2.0
 
@@ -35,10 +37,13 @@ L'entrée **9 — Annuler le transfert** apparaît directement à l'accueil uniq
 
 ## Fichiers du dépôt
 
-- [`install.sh`](install.sh) : point d'entrée à une commande pour la mise à jour par GitHub et le redémarrage.
-- [`install-sauvegarde-1fichier-blondin-v2.0.sh`](install-sauvegarde-1fichier-blondin-v2.0.sh) : installateur complet autonome de mise à jour, contenant l'application et ses visuels.
-- [`sources/app.py`](sources/app.py) : source Python lisible du programme v2.0.
+- [`install.sh`](install.sh) : point d'entrée universel à une commande, avec redémarrage.
+- [`install-sauvegarde-1fichier-blondin-v2.0.1.sh`](install-sauvegarde-1fichier-blondin-v2.0.1.sh) : installateur complet (première installation et mise à jour), contenant l'application et ses visuels.
+- [`install-sauvegarde-1fichier-blondin-v2.0.sh`](install-sauvegarde-1fichier-blondin-v2.0.sh) : ancienne version conservée pour référence.
+- [`sources/app.py`](sources/app.py) : source Python lisible du programme avec sécurité d'extinction renforcée.
 
 ## Version
+
+**v2.0.1 — 14 novembre 2026** : installateur universel compatible avec Batocera 44 vierge, conservation de la configuration lors des mises à jour et blocage des transferts tant que la protection d'extinction V3 n'est pas présente.
 
 **v2.0 — 14 novembre 2026** : réorganisation de l'accueil en cinq rubriques et accès à l'annulation rapide, à partir de la v1.3.7 validée.
