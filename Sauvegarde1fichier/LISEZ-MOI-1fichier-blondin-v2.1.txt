@@ -1,0 +1,38 @@
+1FICHIER ★ BLONDIN EDITION ★ — VERSION 2.1 (BATOCERA 44)
+Installation tout-en-un I9, sans mention TEST dans la version du logiciel.
+
+NOUVEAUTES V2.1
+- Batocera ET Mobile : bouton « Nettoyer les anciens journaux » (confirmation obligatoire).
+- Entretien automatique quotidien via le service Web mobile actif au demarrage de Batocera.
+- Journaux ordinaires conserves 30 jours ; journaux en erreur et rapports de verification conserves 90 jours.
+- Journal principal et journal mobile limites a 5 Mo avec 3 rotations chacun (les dernieres lignes restent lisibles).
+- En cas de sauvegarde ou verification en cours : entretien refuse/reporte. Aucun journal actif supprime.
+- Historique JSON des 300 operations, dossiers, compte 1fichier, cle API, Rclone et sauvegardes : intacts.
+- Conserve toutes les fonctions I8 : controle des absents en deux passages, annulations, progres, connexion VPN, gestion cle API sur les deux interfaces, extinction securisee, relance labwc via environnement nettoye.
+
+INSTALLATION / MISE A JOUR
+1) L extinction V3 doit etre deja installee. Aucune sauvegarde/verif ne doit etre active.
+2) Copier 1fichier-blondin-v2.1.sh dans /userdata/saves/Installscripts.
+3) Lancer en SSH root :
+
+   bash '/userdata/saves/Installscripts/1fichier-blondin-v2.1.sh'
+
+4) Apres succes, le Mini-PC redemarre automatiquement. SSH sera temporairement coupe.
+5) Version mobile : http://IP_DU_BATOCERA:8765 ; depuis l exterieur, VPN WireGuard Freebox.
+
+IMPORTANT
+- Ne pas exposer le port 8765 directement sur Internet.
+- Aucune sauvegarde ni verification 1fichier n est lancee pendant l installation.
+- La rotation automatique depend du service Web mobile demarre (premier essai environ 60 s apres demarrage, puis toutes les heures si besoin; nettoyage au plus une fois par jour).
+- Les rapports de verification sont conserves 90 jours ; certains journaux sans bilan clair sont conserves prudemment plus longtemps en cas d erreur.
+- Les anciennes copies de programme dans /userdata/system/1fichier-blondin/backups ne sont PAS effacees.
+- Tous les fichiers sont embarques ; aucun telechargement Internet requis pour installer.
+- Les essais effectues en environnement de simulation ne remplacent pas une validation sur ton Mini-PC.
+
+DIAGNOSTIC SI EMULATIONSTATION NE REVIENT PAS
+Ne pas relancer l installateur. SSH :
+nohup env -u DISPLAY -u WAYLAND_DISPLAY -u WLR_BACKENDS /etc/init.d/S31emulationstation start > /tmp/es-clean-env.log 2>&1 < /dev/null &
+
+JOURNAL MAINTENANCE
+  /userdata/system/1fichier-blondin/entretien-journaux.json
+  (Derniere date, nombre de fichiers et taille traitee ; pas de cle ni secret.)

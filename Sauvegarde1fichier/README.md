@@ -1,49 +1,51 @@
-# Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v2.0.1
+# Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v2.1
 
-Outil de sauvegarde manuelle de dossiers Batocera 44 vers un compte **1fichier.com** au moyen de Rclone.
+Version finale pour **Batocera 44**, avec l'interface Batocera et l'interface Web mobile. Installation ou mise à jour depuis GitHub, sans copier de fichier dans `Installscripts`.
 
-## Installation depuis GitHub
+## Installation ou mise à jour depuis GitHub
 
-Sur **Batocera 44**, que Sauvegarde 1fichier soit déjà présent ou non, ouvrir une session SSH root et exécuter :
+Ouvrir une session **SSH root** sur le Mini-PC ou Steam Deck sous Batocera 44, puis exécuter cette commande :
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install.sh | bash
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install.sh | bash'
 ```
 
-L'installateur télécharge la version **2.0.1** depuis ce dépôt, contrôle son **SHA-256**, arrête EmulationStation, installe le programme ou met à jour l'installation existante **sans écraser les dossiers configurés**, puis lance un **redémarrage complet de Batocera** uniquement en cas de réussite. Si l'installation échoue après l'arrêt d'EmulationStation, celui-ci est relancé.
+**Prérequis :** la protection d'extinction automatique V3 (scripts `shutdown-trigger.sh` et `shutdown-cancel.sh`) doit déjà être installée et aucune sauvegarde/vérification ne doit être en cours. Si elle est absente, l'installateur refuse toute modification.
 
-**Première installation** : le logiciel, le lanceur Ports, les visuels, la configuration manette et un fichier `dossiers.json` vide sont créés. La protection d'extinction V3 et le compte distant Rclone `1fichier:` ne sont **pas** installés ni configurés par ce script. Il faut les préparer séparément **avant la première sauvegarde**. L'application **refuse de lancer un transfert** tant que la garde d'extinction V3 est absente. Aucun transfert n'est lancé pendant l'installation. Ne jamais publier sa clé API.
+Le point d'entrée `install.sh` télécharge automatiquement l'installateur v2.1 dans **`/tmp` uniquement**, vérifie son **SHA-256** et le lance. Il ne faut ni garder le fichier, ni le copier manuellement dans `/userdata/saves/Installscripts`. Aucun transfert vers 1fichier n'est déclenché pendant l'installation.
 
-**Mise à jour** : `dossiers.json`, les journaux, le compte Rclone, les préférences ntfy et les fichiers d'extinction sont conservés. Une installation partielle ou une version inconnue de `app.py` provoque un arrêt de sécurité, sans écrasement.
+Le logiciel gère lui-même les services et l'arrêt/relance d'EmulationStation avec les précautions Wayland/labwc validées sur Batocera 44. **Batocera redémarre entièrement uniquement après réussite** ; la connexion SSH se coupe alors. En cas d'erreur, pas de redémarrage automatique et tentative de restauration de l'interface graphique si elle était active.
 
-## Nouveau menu principal v2.0
+## Fonctionnalités v2.1
 
-1. **Sauvegardes** — un dossier ou tous les dossiers, extinction après sauvegarde optionnelle.
-2. **Gestion des dossiers** — ajouter, modifier ou retirer une configuration ; `/userdata/roms/` prérempli.
-3. **État et progression** — suivi en direct, vitesse, ETA et annulation contrôlée.
-4. **Contrôles et journaux** — vérification des noms et tailles, historique et journaux avec bilan coloré.
-5. **Compte 1fichier** — abonnement et Cold Storage par consultation de l'API.
+- **Batocera + mobile** : mêmes dossiers de sauvegarde, opérations et état de progression, avec annulation contrôlée.
+- **Un seul compte 1fichier**, remplaçable depuis les deux interfaces ; remplacement de la clé API et configuration de Rclone sans passer par SSH.
+- **Version Web protégée par mot de passe** : un mot de passe est créé et affiché à la première installation ; une mise à jour conserve le mot de passe existant (elle ne l'affiche pas à nouveau).
+- **Entretien automatique des journaux** via le service Web mobile : journaux ordinaires 30 jours, erreurs et rapports de vérification 90 jours, fichiers principaux limités à 5 Mo avec 3 rotations, historique des 300 dernières opérations.
+- **Bouton « Nettoyer les anciens journaux »** présent dans l'interface Batocera et dans l'interface mobile.
+- Protection contre les opérations concurrentes, contrôle des absents en deux passages et sécurité de l'extinction automatique V3.
+- Conservation des configurations existantes : dossiers, Rclone, compte 1fichier, mot de passe Web, ntfy, sauvegardes et journaux conservés selon la politique d'entretien.
 
-L'entrée **9 — Annuler le transfert** apparaît directement à l'accueil uniquement lorsqu'une sauvegarde est en cours. `0` quitte le logiciel ; la navigation manette et clavier est conservée.
+## Accès au service Web mobile
 
-## Autres fonctionnalités conservées
+Après redémarrage, ouvrir : `http://IP_DU_BATOCERA:8765` (par exemple `http://192.168.1.165:8765` si cette adresse n'a pas changé).
 
-- Sauvegardes en arrière-plan, avec verrou empêchant l'extinction programmée pendant un transfert actif.
-- Prise en charge des **liens symboliques racine** vers des volumes externes montés, quel que soit leur point de montage autorisé ; contrôle des montages avant et après transfert. Les liens imbriqués restent ignorés.
-- Vérification de sauvegarde par noms et tailles (pas de somme de contrôle du contenu).
-- Extinction facultative après une sauvegarde réussie, avec compte à rebours annulable de 30 secondes **dans le logiciel** ; fermer ce dernier supprime cette extinction sans interrompre le transfert.
-- Transfert Rclone `--ignore-existing` : les fichiers déjà présents sur 1fichier ne sont pas retransférés, même s'ils ont été modifiés localement.
-- Sauvegarde locale des fichiers remplacés pendant la mise à jour ; conservation de l'historique, des configurations, des journaux, de Rclone et des paramètres ntfy.
+À distance, passer par le **VPN WireGuard de la Freebox**. **Ne pas ouvrir le port 8765 directement sur Internet** : l'interface est en HTTP local.
 
-## Fichiers du dépôt
+## Fichiers officiels
 
-- [`install.sh`](install.sh) : point d'entrée universel à une commande, avec redémarrage.
-- [`install-sauvegarde-1fichier-blondin-v2.0.1.sh`](install-sauvegarde-1fichier-blondin-v2.0.1.sh) : installateur complet (première installation et mise à jour), contenant l'application et ses visuels.
-- [`install-sauvegarde-1fichier-blondin-v2.0.sh`](install-sauvegarde-1fichier-blondin-v2.0.sh) : ancienne version conservée pour référence.
-- [`sources/app.py`](sources/app.py) : source Python lisible du programme avec sécurité d'extinction renforcée.
+- [`install.sh`](install.sh) : commande de démarrage stable à utiliser depuis GitHub ; vérifie le SHA-256 et lance la version finale.
+- [`1fichier-blondin-v2.1.sh`](1fichier-blondin-v2.1.sh) : installateur complet autonome, six modules embarqués.
+- [`LISEZ-MOI-1fichier-blondin-v2.1.txt`](LISEZ-MOI-1fichier-blondin-v2.1.txt) : documentation de la version 2.1.
 
-## Version
+Les anciens installateurs v2.0.x et TEST sont conservés dans le dépôt à titre historique. **L'installation GitHub officielle pointe exclusivement vers la v2.1 finale.**
 
-**v2.0.1 — 14 novembre 2026** : installateur universel compatible avec Batocera 44 vierge, conservation de la configuration lors des mises à jour et blocage des transferts tant que la protection d'extinction V3 n'est pas présente.
+## Contrôle du fichier officiel
 
-**v2.0 — 14 novembre 2026** : réorganisation de l'accueil en cinq rubriques et accès à l'annulation rapide, à partir de la v1.3.7 validée.
+Empreinte SHA-256 de `1fichier-blondin-v2.1.sh` :
+
+```text
+ac7e016ea1a868bd6b4b463e65af4b4067b3246b07cd7e167913b363b1d8cb0f
+```
+
+**Version :** 2.1 — 15 novembre 2026.
