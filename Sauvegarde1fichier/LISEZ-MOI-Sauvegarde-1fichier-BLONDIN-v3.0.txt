@@ -1,0 +1,275 @@
+================================================================================
+      SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★ — VERSION 3.0
+                          GUIDE COMPLET
+================================================================================
+Date : 17 novembre 2026
+Compatibilité ciblée : Batocera 44 (Mini-PC et Steam Deck)
+Dépôt : https://github.com/blondin-svg/blondin.rep
+Dossier du projet : Sauvegarde1fichier
+
+1. PRÉSENTATION
+----------------
+Sauvegarde 1fichier ★ BLONDIN EDITION ★ est une application de sauvegarde
+MANUELLE de dossiers Batocera vers le compte 1fichier.com à l'aide de Rclone.
+Elle comporte une interface Batocera utilisable à la manette ou au clavier,
+ainsi qu'une interface Web pour un téléphone ou un ordinateur du réseau local.
+
+L'installateur v3.0 est COMPLET et HORS LIGNE : il ne requiert aucun ancien
+installateur de Sauvegarde 1fichier. Il peut également remplacer une ancienne
+version en conservant les réglages existants. Aucun transfert de jeux n'est
+lancé lors de l'installation.
+
+IMPORTANT : c'est une application de sauvegarde, et non de synchronisation
+automatique. Les fichiers originaux des jeux restent présents sur Batocera.
+
+2. AVANT L'INSTALLATION
+-----------------------
+- Disposer de Batocera 44 et d'un accès SSH en root.
+- Avoir installé la protection d'extinction automatique V3 utilisée par
+  BLONDIN EDITION (scripts déclencheur/annulation d'écran de veille présents).
+  L'installateur refuse de continuer si ce prérequis est absent.
+- Prévoir suffisamment d'espace disponible pour la création temporaire de
+  media.zip lorsque des médias volumineux sont sauvegardés.
+- Disposer d'un compte 1fichier.com et configurer le remote Rclone « 1fichier »
+  au besoin après l'installation.
+- Ne pas lancer l'installation pendant un transfert actif.
+
+3. INSTALLATION HORS LIGNE (FICHIER LOCAL)
+-----------------------------------------
+Copier le fichier :
+  1fichier-blondin-v3.0-COMPLET.sh
+
+dans :
+  /userdata/saves/Installscripts/
+
+Puis exécuter en SSH :
+  bash /userdata/saves/Installscripts/1fichier-blondin-v3.0-COMPLET.sh
+
+Le script embarque le moteur et les interfaces Batocera/Web. Il sauvegarde
+les composants sensibles en cas de mise à niveau et préserve les dossiers
+configurés, le mot de passe Web, les journaux et l'historique lorsqu'ils existent.
+Une installation réussie déclenche le redémarrage complet de Batocera.
+La connexion SSH sera coupée pendant ce redémarrage.
+
+4. INSTALLATION DIRECTEMENT DEPUIS GITHUB
+------------------------------------------
+Lorsque le fichier v3.0 est présent sur le dépôt public :
+
+  curl -fLsS https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/1fichier-blondin-v3.0-COMPLET.sh -o /tmp/1fichier-blondin-v3.0-COMPLET.sh && bash /tmp/1fichier-blondin-v3.0-COMPLET.sh
+
+Cette commande télécharge d'abord le script, puis l'exécute, et évite
+l'installation depuis un téléchargement incomplet. Le téléchargement
+requiert Internet ; l'installateur lui-même est autonome.
+
+5. MENU PRINCIPAL BATOCERA
+--------------------------
+  1  Sauvegardes
+  2  Gestion des dossiers
+  3  État et progression
+  4  Contrôles et journaux
+  5  Compte 1fichier / Rclone
+  0  Quitter
+
+Navigation : croix/stick, A/Entrée pour valider, B/Échap pour revenir,
+START pour revenir au menu. Les opérations réelles demandent confirmation.
+L'accueil est volontairement compact : il ne réaffiche pas toute la liste
+détaillée des systèmes à chaque retour au menu principal.
+
+6. MENU SAUVEGARDES
+-------------------
+  1  Sauvegarder un dossier
+  2  Sauvegarder tous les dossiers
+  3  Gestion des archives médias (renvoyer media.zip)
+  0  Retour
+
+On sélectionne le système ou les systèmes à envoyer vers leur destination
+1fichier. La sauvegarde est manuelle ; le programme affiche la progression
+et garde un historique des opérations. Les transferts continuent en arrière-
+plan selon le mode de lancement, sans obliger à rester dans l'écran de suivi.
+Une option d'extinction en fin de sauvegarde peut être proposée : bien lire
+la confirmation avant de la sélectionner.
+
+7. NOUVEAUTÉ V3.0 — SYMBOLES ET DATES DES SYSTÈMES
+---------------------------------------------------
+Dans « Sauvegarder un dossier », la liste est compacte : un symbole coloré,
+le nom du système et la date/heure de sa DERNIÈRE sauvegarde.
+
+  ✔ vert    = sauvegarde complète suivie d'un contrôle manuel réussi
+              des noms et tailles des fichiers de jeux
+  ! jaune   = transfert réussi mais contrôle manuel non encore effectué
+  ✖ rouge   = erreur de sauvegarde ou de contrôle
+  – jaune   = dernière sauvegarde annulée
+  · gris    = aucun bilan de sauvegarde pour cette configuration
+
+La légende se trouve au bas de la liste. Les libellés « validé », « erreur »
+et « non vérifié » ne sont pas répétés sur chaque ligne.
+
+La date correspond à la DERNIÈRE tentative de sauvegarde ; ce n'est pas la
+date du dernier contrôle. Après une nouvelle copie, la coche redevient
+jaune jusqu'à un nouveau contrôle manuel concluant. Une modification de
+la source ou de la destination invalide les anciens bilans associés.
+
+ATTENTION : la coche verte confirme la comparaison des NOMS et TAILLES des
+fichiers de jeux après un transfert complet. Elle ne constitue ni une
+vérification binaire du contenu ni un contrôle du contenu de media.zip.
+
+8. DOSSIERS MÉDIAS ET CREATION DE media.zip
+-------------------------------------------
+Lors de la copie principale, les dossiers nommés :
+  images / manuals / videos / media
+sont exclus du transfert classique (y compris s'ils se trouvent dans des
+sous-dossiers et indépendamment de la casse du nom).
+
+Après une copie principale réussie, l'application recherche ces dossiers
+pour le système concerné, prépare UN fichier media.zip de ce système,
+puis l'envoie dans la destination du système sur 1fichier :
+  1fichier:Sauvegarde-<Systeme>/media.zip
+
+Il n'y a pas de ZIP créé si aucun de ces dossiers n'existe.
+L'archive temporaire est supprimée localement uniquement après la réussite
+de la procédure d'envoi/protection distante. Les fichiers médias originaux
+sur Batocera ne sont jamais supprimés par cette opération.
+
+Si la sauvegarde principale est annulée ou échoue, la création de media.zip
+ne démarre pas. Le suivi « État et progression » montre successivement la
+copie des jeux, la création du ZIP, son envoi et le bilan final.
+
+9. DEUXIÈME SAUVEGARDE — PROTECTION DE L'ANCIEN media.zip
+---------------------------------------------------------
+Si media.zip existe déjà sur 1fichier, le nouveau ZIP est d'abord envoyé
+sous un nom temporaire distinct. La présence du fichier envoyé est contrôlée
+par son nom et sa taille. L'ancien ZIP est protégé pendant le remplacement,
+puis le nouveau ZIP prend son nom définitif. L'ancien n'est nettoyé qu'après
+confirmation du nouveau fichier.
+
+Si le remplacement échoue, le programme tente de remettre l'ancien ZIP en
+place. En cas d'état distant incertain, il conserve les fichiers utiles
+et signale une intervention nécessaire plutôt que de détruire les secours.
+Une comparaison nom/taille NE garantit PAS l'intégrité binaire du contenu.
+
+10. RENVoyer UN media.zip CONSERVÉ
+---------------------------------
+Si le transfert du ZIP échoue, l'archive terminée reste sur Batocera,
+par exemple :
+  /userdata/1fichier-blondin-temp/teknoparrot/<ID_OPERATION>/media.zip
+
+Pour la renvoyer SANS refaire la sauvegarde des jeux et SANS recréer le ZIP :
+  Sauvegardes > Gestion des archives médias > Choisir le ZIP > Confirmer.
+
+L'application détecte les archives locales conservées, les propose par
+système et applique la protection du ZIP distant. Une fonction équivalente
+existe sur l'interface Web. Le renvoi est annulable et possède un bilan.
+
+NE PAS supprimer manuellement un ZIP local encore en attente de renvoi.
+
+11. GESTION DES BLOCAGES 1FICHIER
+---------------------------------
+Une limitation côté 1fichier peut entraîner :
+  IP Locked #382
+
+La version intègre un délai entre les principales opérations distantes
+(environ 35 secondes en utilisation normale) et détecte le blocage IP.
+Cette précaution réduit le risque de blocage sans le supprimer complètement.
+Si 1fichier bloque encore l'accès API, interrompre les tentatives répétées,
+conserver l'archive locale et retenter après le déblocage du service.
+
+12. ÉTAT, PROGRESSION ET ANNULATION
+----------------------------------
+Menu « État et progression » :
+  - Progression en direct : copie, fichiers comptés, média ZIP, bilan
+  - Annuler sauvegarde / vérification / renvoi ZIP
+
+L'annulation et le suivi sont disponibles depuis l'interface Batocera ; le
+serveur mobile propose aussi le suivi des opérations et leur annulation.
+Les journaux enregistrent les erreurs et les étapes de transfert.
+
+13. CONTRÔLE MANUEL ET HISTORIQUE
+---------------------------------
+Menu « Contrôles et journaux » :
+  - Vérifier manuellement les noms et tailles des fichiers
+  - Historique et bilans
+  - Journaux
+  - Différences et correction manuelle
+
+La copie n'exécute PAS de vérification finale automatique. Un transfert
+« OK - TRANSFERT RÉUSSI (NON VÉRIFIÉ) » signifie que l'outil de transfert
+a signalé le succès. La vérification manuelle est une opération séparée
+qui compare les noms et les tailles, sans retransférer les fichiers.
+Les corrections éventuelles constituent une action distincte, avec les
+confirmations et protections existantes.
+
+14. INTERFACE WEB MOBILE
+-------------------------
+Depuis un appareil sur le même réseau :
+  http://IP_DE_BATOCERA:8765
+
+Utiliser l'adresse IP réellement affichée par Batocera. Fonctions :
+  - Sélectionner / désélectionner tous les dossiers
+  - Démarrer une sauvegarde manuelle ou une vérification des noms et tailles
+  - Voir la progression et les états du ZIP
+  - Renvoyer un media.zip local conservé
+  - Gérer les dossiers configurés
+  - Consulter l'historique et les journaux
+  - Consulter le compte 1fichier, l'état Premium et les liens de renouvellement
+  - Utiliser les fonctions de configuration Rclone proposées
+  - Demander l'extinction manuelle selon les sécurités intégrées
+
+Le service Web est en HTTP local, PAS en HTTPS public. Il est protégé par
+une authentification, mais NE DOIT PAS être exposé directement sur Internet.
+Pour un accès distant, préférer un VPN privé correctement configuré.
+Ne jamais ouvrir le port 8765 sur la box vers Internet.
+
+15. CHEMINS UTILES
+------------------
+Application :
+  /userdata/system/1fichier-blondin/
+Configuration des dossiers :
+  /userdata/system/1fichier-blondin/dossiers.json
+Historique :
+  /userdata/system/1fichier-blondin/historique.json
+Journal général :
+  /userdata/system/logs/sauvegarde-1fichier-blondin.log
+Journaux détaillés :
+  /userdata/system/logs/1fichier-blondin/
+Configuration Rclone :
+  /userdata/system/.config/rclone/rclone.conf
+Archives ZIP temporaires conservées en cas d'échec :
+  /userdata/1fichier-blondin-temp/<systeme>/<id_operation>/media.zip
+Service mobile :
+  /userdata/system/services/Sauvegarde1fichierMobile
+
+Ne pas publier rclone.conf, les clés API, mots de passe, données de compte,
+journaux contenant des informations personnelles, ni des sauvegardes privées.
+
+16. DIAGNOSTIC NON DESTRUCTIF EN SSH
+-----------------------------------
+Chercher les archives ZIP à renvoyer :
+  find /userdata/1fichier-blondin-temp -type f -name 'media.zip' -exec ls -lh {} \;
+
+Lire les dernières lignes du journal :
+  tail -n 80 /userdata/system/logs/sauvegarde-1fichier-blondin.log
+
+Vérifier la syntaxe de l'installateur local (sans l'exécuter) :
+  bash -n /userdata/saves/Installscripts/1fichier-blondin-v3.0-COMPLET.sh
+
+17. CONSERVATION DES DONNÉES ET PRÉCAUTIONS
+------------------------------------------
+- L'installation garde les réglages existants si présents.
+- Les anciennes versions du dépôt GitHub peuvent être conservées séparément.
+- Aucune sauvegarde ne se lance automatiquement à l'installation.
+- Ne pas effacer manuellement les ZIP temporaires après une erreur.
+- Après une nouvelle version, effectuer une petite sauvegarde puis un contrôle
+  manuel avant de considérer le système entièrement vérifié.
+- Le logiciel ne remplace pas une sauvegarde secondaire indépendante.
+
+18. VERSION ET VALIDATION
+-------------------------
+Version publiée : v3.0 — installateur complet autonome.
+Base fonctionnelle : v2.3.4 TEST (sauvegardes et renvoi media.zip testés
+sur le Batocera de l'utilisateur).
+V3.0 : scénarios d'installation et états des symboles testés en simulation ;
+validation complète sur installation réelle à confirmer.
+
+================================================================================
+                     FIN DU GUIDE — BLONDIN EDITION
+================================================================================
