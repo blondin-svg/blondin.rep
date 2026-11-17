@@ -1,3 +1,19 @@
+## Nouvelle v3.1-COMPLET (17 novembre 2026)
+
+La v3.1 ajoute la navigation Web compacte, le dernier système sauvegardé et l'historique des systèmes récents (voir `LISEZ-MOI-Sauvegarde-1fichier-BLONDIN-v3.1.txt`). Elle conserve les fonctions `media.zip` de la v3.0.
+
+**Installation v3.1 depuis GitHub, en SSH root sous Batocera 44 :**
+
+```bash
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-v3.1.sh | bash'
+```
+
+Ce lanceur dédié vérifie le SHA-256 de l'installateur complet puis sa syntaxe Bash avant installation. Ne pas installer pendant un transfert, une vérification ou un renvoi `media.zip`. La protection d'extinction V3 est obligatoire. Un redémarrage de Batocera peut conclure une installation réussie.
+
+**Important :** la commande historique `install.sh` ci-dessous reste volontairement sur la v2.1 déjà publiée ; elle n'installe pas la v3.1. La nouvelle version doit encore être validée sur le matériel réel.
+
+---
+
 # Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v2.1
 
 Version finale pour **Batocera 44**, avec l'interface Batocera et l'interface Web mobile. Installation ou mise à jour depuis GitHub, sans copier de fichier dans `Installscripts`.
