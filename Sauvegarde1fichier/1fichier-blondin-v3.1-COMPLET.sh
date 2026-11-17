@@ -604,7 +604,7 @@ fi
 
 echo ''
 echo '[OK] Installation COMPLETE autonome terminee.'
-echo '[OK] v3.0 : sauvegarde, archive media.zip et suivi visuel Batocera/Web.'
+echo '[OK] v3.1 : sauvegarde, archive media.zip et navigation Web compacte.'
 echo '[OK] Configuration des dossiers, mot de passe et ntfy preserves si existants.'
 echo '[INFO] Adresse : http://IP_DE_BATOCERA:8765 (HTTP, pas HTTPS)'
 echo '[INFO] A distance : utiliser le VPN WireGuard de la Freebox.'
