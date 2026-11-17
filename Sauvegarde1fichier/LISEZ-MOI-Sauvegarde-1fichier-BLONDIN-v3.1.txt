@@ -30,6 +30,14 @@ FONCTIONS CONSERVÉES
 - Sécurité du verrou transfert, protection extinction, authentification Web.
 - Configurations existantes, clé API, mot de passe, historique et ntfy.
 
+
+LANCEUR V3.1 AVEC VÉRIFICATION D’INTÉGRITÉ (RECOMMANDÉ)
+En SSH root, sur Batocera 44 :
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-v3.1.sh | bash'
+Ce lanceur vérifie le SHA-256 puis la syntaxe Bash, et exécute la même version complète.
+Empreinte SHA-256 de 1fichier-blondin-v3.1-COMPLET.sh :
+784409dabed7d73cfebdaa47196be33d10cbce42c3c0feacf25c517ece515606
+
 INSTALLATION DEPUIS GITHUB (SSH root sur Batocera 44)
 Exécuter cette commande EN UNE SEULE LIGNE, sans l'opérateur « | bash » :
 curl -fLsS --retry 3 https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/1fichier-blondin-v3.1-COMPLET.sh -o /tmp/1fichier-blondin-v3.1-COMPLET.sh && bash /tmp/1fichier-blondin-v3.1-COMPLET.sh
