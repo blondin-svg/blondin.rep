@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sauvegarde 1fichier BLONDIN EDITION v3.2 (GitHub) / Batocera 44
+# Sauvegarde 1fichier BLONDIN EDITION v3.3 (GitHub) / Batocera 44
 set -Eeuo pipefail
 [[ "${EUID:-$(id -u)}" -eq 0 ]] || { echo '[ERREUR] Executer en root.' >&2; exit 1; }
 for cmd in curl python3 bash; do command -v "$cmd" >/dev/null || { echo "[ERREUR] $cmd manquant." >&2; exit 1; }; done
@@ -31,7 +31,7 @@ source=source.replace(b'# Batocera 44 / v3.1 CATEGORIES + SOUS-MENUS (Batocera +
 source=source.replace(b'  1FICHIER-BLONDIN-V3.1 / BATOCERA 44 + MOBILE',b'  1FICHIER-BLONDIN-V3.3 / BATOCERA 44 + MOBILE',1)
 source=source.replace(b"echo '[OK] v3.1 : sauvegarde, media.zip, categories Consoles/Ordinateurs/Arcade et Web.'",b"echo '[OK] v3.3 : dossiers 1fichier et synchronisation des archives existantes.'",1)
 out=Path(sys.argv[2]);out.write_bytes(source);out.chmod(0o700)
-print('[OK] Installateur complet v3.2 prepare.')
+print('[OK] Installateur complet v3.3 prepare.')
 PY_GH_V32
 bash -n "$WORK/install-v3.2.sh"
 bash "$WORK/install-v3.2.sh"
