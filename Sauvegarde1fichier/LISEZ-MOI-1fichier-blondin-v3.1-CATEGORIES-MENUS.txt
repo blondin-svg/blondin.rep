@@ -1,0 +1,43 @@
+SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★
+VERSION v3.1 — CATÉGORIES ET SOUS-MENUS
+21 novembre 2026 — Batocera 44
+
+NOUVEAUTÉ
+Le choix d'un système commence désormais par trois catégories :
+Consoles, Ordinateurs, Arcade.
+Puis le sous-menu de la catégorie affiche uniquement ses systèmes,
+leurs coches d'état et les dates des dernières sauvegardes.
+B/Echap ou « Retour aux catégories » revient au choix des catégories.
+
+Les statuts restent ceux des bilans locaux :
+✔ contrôle manuel validé, ! transfert non vérifié,
+✖ erreur, – annulé, · aucun bilan.
+
+La rubrique de reclassement Batocera utilise aussi ces sous-menus.
+L'interface Web v3.1, ses catégories et ses six rubriques sont conservées.
+La sauvegarde, media.zip, la vérification manuelle, le contrôle d'extinction,
+l'annulation et l'historique sont conservés.
+
+Aucun déplacement d'archive ni envoi n'est provoqué par le reclassement.
+Les catégories restent locales dans categories-v3.1.json.
+
+INSTALLATION GITHUB (SSH root Batocera 44)
+curl -fLsS --retry 3 https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/1fichier-blondin-v3.1-CATEGORIES-MENUS-COMPLET.sh -o /tmp/1fichier-blondin-v3.1-CATEGORIES-MENUS-COMPLET.sh && bash /tmp/1fichier-blondin-v3.1-CATEGORIES-MENUS-COMPLET.sh
+
+INSTALLATION LOCALE
+Copier le script autonome 1fichier-blondin-v3.1-CATEGORIES-MENUS-COMPLET.sh
+dans /userdata/saves/Installscripts/, puis exécuter :
+bash /userdata/saves/Installscripts/1fichier-blondin-v3.1-CATEGORIES-MENUS-COMPLET.sh
+
+PRÉREQUIS / PRÉCAUTIONS
+Batocera 44 ; aucun transfert actif ; scripts d'extinction automatique V3
+existants ; SSH root. L'installation réussie peut redémarrer la machine.
+Ne pas exposer le serveur Web HTTP 8765 directement sur Internet.
+
+VALIDATION
+Installation hors ligne simulée et tests de navigation/compilation réussis
+sur le paquet local. Le script GitHub autonome complet a été publié et
+ses deux archives embarquées et son patch ont été vérifiés par lecture.
+Test final réel sur Batocera 44 à réaliser.
+
+La version précédente n'a pas été écrasée.
