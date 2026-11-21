@@ -317,6 +317,21 @@ else
     echo '[INFO] Ne pas supprimer transfert.lock ; verifier les processus Rclone et EmulationStation.' >&2
     exit 1
   fi
+  # Compatibilite avec un Batocera vierge : module R1 sans script Extinction V3.
+  if [[ "$SHUTDOWN_V3_PRESENT" == 0 ]]; then
+    python3 - "$WORK/04-correctifs-R1-M1.2.sh" <<'PY_OPTIONAL_GUARD_R1'
+from pathlib import Path
+import sys
+p=Path(sys.argv[1]); s=p.read_text(encoding='utf-8')
+old='[[ -f "$TRIGGER" ]] && grep -Fq \'1FICHIER-BLONDIN-GUARD-V1\' "$TRIGGER" || { echo \'[ERREUR] Verrou extinction non trouve, aucune modification.\' >&2; exit 1; }'
+new="echo '[INFO] Extinction V3 absente : garde externe facultative.'"
+if s.count(old)!=1:
+    raise SystemExit('[ERREUR] Structure du module R1 non reconnue. Aucune modification.')
+p.write_text(s.replace(old,new,1),encoding='utf-8')
+print('[OK] Compatibilite R1 adaptee a Batocera vierge.')
+PY_OPTIONAL_GUARD_R1
+    bash -n "$WORK/04-correctifs-R1-M1.2.sh"
+  fi
   bash "$WORK/04-correctifs-R1-M1.2.sh"
 fi
 echo '[ETAPE 5/7] Gestion unique compte 1fichier depuis Batocera et Mobile.'
