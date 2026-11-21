@@ -1,0 +1,31 @@
+SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★ — v3.2
+Batocera 44 — 21 novembre 2026
+
+NOUVEAUX DOSSIERS REELS SUR 1FICHIER
+Sauvegarde Batocera/
+  Consoles/PlayStation 2/
+  Consoles/Nintendo Switch/
+  Ordinateurs/Windows/
+  Arcade/Lindbergh/
+  Arcade/TeknoParrot/
+  Arcade/Namco System 3xx/
+
+Installer en ligne (root SSH) :
+curl -fLsS https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-v3.2.sh -o /tmp/install-1fichier-v3.2.sh && bash /tmp/install-1fichier-v3.2.sh
+
+Le script en ligne recupere la version complete v3.1 ancree sur un commit
+connu et y integre les chemins v3.2 avant installation.
+Il peut remplacer l'installation precedente sur Batocera 44.
+
+- Nouvelles sauvegardes dans de vrais sous-dossiers par categorie et systeme.
+- Copies, controles et media.zip utilisent ces nouvelles destinations.
+- Historiques anciens preserves, sans faux statut valide sur nouvelle destination.
+- Anciens ZIP media.zip ne peuvent pas etre relances sous le nouveau dossier.
+- Aucune archive cloud existante n'est deplacee ni effacee.
+- Configuration Rclone, mot de passe Web, fichiers de configuration et journaux conserves.
+- Trois dossiers de categories crees si 1fichier est accessible lors de l'installation.
+- Copie des anciens fichiers applicatifs sous /userdata/system/1fichier-blondin/backups.
+- Une installation en environnement de simulation a ete realisee;
+  validation reelle sur Batocera et 1fichier a effectuer.
+
+La v3.1 originale reste disponible dans le depot.
