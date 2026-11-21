@@ -1,0 +1,41 @@
+SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★ — v3.4
+Batocera 44 — 21 novembre 2026
+
+NOUVEAUTES WEB
+- Sauvegarder : categories Consoles / Ordinateurs / Arcade, selection multiple.
+- Verification : memes categories, cases toutes decochees par defaut,
+  selection independante de celle de Sauvegarder.
+- Listes stables pendant les rafraichissements automatiques : correction
+  de la remontée intempestive sur smartphone.
+- Selectionner / decocher toute la categorie affichee.
+- Bouton « Retour en haut ».
+- Les destinations 1fichier, archives, historiques et fonctions Rclone
+  existantes ne sont pas modifies.
+
+INSTALLATION DE LA MISE A JOUR WEB (v3.3 DEJA INSTALLEE)
+  curl -fLsS https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-v3.4.sh -o /tmp/install-v3.4.sh && bash /tmp/install-v3.4.sh
+
+INSTALLATION LOCALE SANS INTERNET (v3.3 DEJA INSTALLEE)
+Copier install-v3.4.sh dans /userdata/saves/Installscripts, puis :
+  bash /userdata/saves/Installscripts/install-v3.4.sh
+
+INSTALLATION COMPLETE DEPUIS GITHUB (BASE v3.3 + CORRECTIF v3.4)
+  curl -fLsS https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-v3.4-complet.sh -o /tmp/install-v3.4-complet.sh && bash /tmp/install-v3.4-complet.sh
+
+La mise a jour Web seule ne redemarre pas Batocera. Rechargez completement
+la page du navigateur sur Android pour recevoir le nouveau JavaScript.
+
+La version complete reutilise le socle v3.3 fige et applique le correctif
+v3.4 avant son redemarrage final ; connexion Internet necessaire.
+
+SECURITE
+- Sauvegarde locale des deux fichiers Web app.js et index.html dans :
+  /userdata/system/1fichier-blondin/backups/avant-web-v3.4-...
+- Refus si la structure Web est inconnue ou les chemins sont des symlinks.
+- Aucun transfert, suppression ni deplacement de fichiers 1fichier.
+- Ne pas installer pendant une sauvegarde / verification active.
+
+TESTS
+- Python compilable, JS verifie par node --check, syntaxe Bash verifiee.
+- Transformation et idempotence controlees sur un modele du Web.
+- A confirmer sur Batocera 44 en conditions reelles et sur smartphone Android.
