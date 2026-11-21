@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sauvegarde 1fichier BLONDIN EDITION v3.2 (GitHub) / Batocera 44
 set -Eeuo pipefail
-[[ "\${EUID:-$(id -u)}" -eq 0 ]] || { echo '[ERREUR] Executer en root.' >&2; exit 1; }
+[[ "${EUID:-$(id -u)}" -eq 0 ]] || { echo '[ERREUR] Executer en root.' >&2; exit 1; }
 for cmd in curl python3 bash; do command -v "$cmd" >/dev/null || { echo "[ERREUR] $cmd manquant." >&2; exit 1; }; done
 WORK=$(mktemp -d /tmp/blondin-install-v32.XXXXXXXX)
 trap 'rm -rf -- "$WORK"' EXIT
