@@ -1,0 +1,59 @@
+SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★ — v3.1 CATÉGORIES COMPLET
+21 novembre 2026 | Batocera 44 | Installateur autonome hors ligne
+
+FICHIER : 1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh
+
+INSTALLATION LOCALE (SSH root sur Batocera 44)
+1. Copier le fichier ci-dessus dans /userdata/saves/Installscripts/
+2. Vérifier qu'aucune sauvegarde ni vérification n'est en cours.
+3. Exécuter :
+   bash -n /userdata/saves/Installscripts/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh
+   bash /userdata/saves/Installscripts/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh
+
+SHA-256 : fa57b101ad42102e93fdda0d8271e0c17c6fb27f5ee6253163556af1fc602de3
+
+NOUVEAUTÉS
+- Catégories Consoles / Ordinateurs / Arcade dans le moteur Batocera et dans le Web.
+- Catégorie demandée avant tout lancement d'une sauvegarde manuelle.
+- Catégorie mémorisée par identifiant de système.
+- Gestion et reclassement des systèmes depuis le menu 6 Batocera et la rubrique
+  Sauvegarder sur l'interface Web, avec confirmation avant enregistrement.
+- Initialisation proposée : PlayStation 2, Nintendo Switch => Consoles ;
+  Windows => Ordinateurs ; Lindbergh, TeknoParrot et Namco System 3xx => Arcade.
+- Les autres systèmes non classés sont proposés dans Consoles par défaut ;
+  ils peuvent être déplacés vers la bonne catégorie à tout moment.
+- Le classement est enregistré localement dans :
+  /userdata/system/1fichier-blondin/categories-v3.1.json
+- Aucune archive existante sur 1fichier n'est déplacée, supprimée ou réémise.
+- Destinations Rclone, historique et bilan d'intégrité inchangés.
+
+ÉLÉMENTS CONSERVÉS
+- Interface Web compacte six rubriques, sauvegardes récentes et historique.
+- Fonction media.zip, reprise de renvoi, contrôles manuels et annulation.
+- Mot de passe Web, configuration Rclone, données de sauvegarde, journaux
+  et dispositif d'extinction existants.
+
+PRÉREQUIS ET SÉCURITÉ
+- Batocera 44 et root SSH.
+- Protection d'extinction automatique V3 déjà installée : sinon l'installation
+  s'arrête sans modification.
+- Pas d'opération active au moment de la mise à niveau.
+- Le script peut redémarrer Batocera en fin d'installation.
+- Interface Web : http://IP_DE_BATOCERA:8765. Ne pas exposer le port 8765
+  directement sur Internet ; accès distant par VPN privé.
+
+VALIDATION
+- Syntaxe Bash et compilation Python : effectuées.
+- Installation complète dans un environnement de simulation : réussie.
+- Classement initial, confirmation obligatoire, rejet de catégorie inconnue
+  et accès des catégories depuis le serveur Web : testés.
+- Validation finale sur matériel Batocera 44 avec compte réel : à réaliser.
+
+PUBLICATION GITHUB
+Fichier publie dans blondin-svg/blondin.rep, dossier Sauvegarde1fichier.
+La version precedente v3.1-COMPLET.sh reste intacte.
+
+Installation en SSH root sur Batocera 44 (une seule ligne) :
+  curl -fLsS --retry 3 https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh -o /tmp/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh && echo "fa57b101ad42102e93fdda0d8271e0c17c6fb27f5ee6253163556af1fc602de3  /tmp/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh" | sha256sum -c - && bash /tmp/1fichier-blondin-v3.1-CATEGORIES-COMPLET.sh
+
+Le téléchargement exige Internet. L'installateur téléchargé est autonome.
