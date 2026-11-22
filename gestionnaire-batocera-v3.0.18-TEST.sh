@@ -12878,6 +12878,115 @@ linuxloader_patch_menu(){
   done
 }
 
+# Sinden Exit Combo V1.0 - BLONDIN EDITION - Batocera 44
+# Utilise l'installateur autonome ; aucune modification des autres services.
+# URL surchargeable pour tester la branche avant publication sur main.
+SINDEN_INSTALLER_URL="${SINDEN_INSTALLER_URL:-https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/SindenExitCombo/install-sinden-exit-combo-v1.0.sh}"
+sinden_installer_exec(){
+  local action="$1" file='' rc=1
+  case "$action" in install|--uninstall|--restore) ;; *) return 2 ;; esac
+  [[ "$(detect_batocera_version)" == 44* ]] || {
+    ui_print error '[SÉCURITÉ] Sinden Exit Combo réservé à Batocera 44.'
+    return 1
+  }
+  command -v curl >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1 ||
+  { ui_print error '[ERREUR] curl ou python3 manquant.'; return 1; }
+  file="$(mktemp "$CACHE/.sinden-exit.XXXXXX")" || return 1
+  if ! curl -fLsS --proto '=https' --proto-redir '=https' --connect-timeout 10 --max-time 40 \
+    "$SINDEN_INSTALLER_URL" -o "$file"; then
+    rm -f -- "$file"
+    ui_print error '[ERREUR] Installateur Sinden indisponible.'
+    return 1
+  fi
+  if [[ ! -s "$file" || -L "$file" ]] ||
+     ! grep -Fq 'BLONDIN SINDEN EXIT COMBO V1.0' "$file" ||
+     ! grep -Fq 'SINDEN_PHYSICAL_PAIR_REAL_CODES_V1' "$file" ||
+     ! grep -Fq "['hotkeygen', '--send', 'exit']" "$file" ||
+     ! sh -n "$file"; then
+    rm -f -- "$file"
+    ui_print error '[SÉCURITÉ] Installateur Sinden non conforme.'
+    return 1
+  fi
+  ui_print info '  Installateur Sinden vérifié (structure et syntaxe).'
+  sh "$file" "$action"
+  rc=$?
+  rm -f -- "$file"
+  return "$rc"
+}
+sinden_menu(){
+  local choice='' state=''
+  while :; do
+    refresh_screen
+    ui_section 'SINDEN EXIT COMBO - V1.0'
+    state="$(installation_status sinden)"
+    case "$state" in
+      X)
+        if batocera-services status sinden_exit_combo >/dev/null 2>&1; then
+          ui_print success '  ✓ Service installé et ACTIF'
+        else
+          ui_print warning '  ◆ Service installé et ARRÊTÉ'
+        fi ;;
+      '?') ui_print warning '  ✗ Service absent' ;;
+      *) ui_print warning '  ◆ Installation à vérifier (aucun remplacement automatique)' ;;
+    esac
+    ui_print info '  Hotkey : bouton avant droit (code 3)'
+    ui_print info '  Avec : gâchette (code 272)'
+    ui_print info '  Maintien : 2 secondes ; sortie : hotkeygen'
+    ui_item '1) Installer / Réinstaller'
+    ui_item '2) Activer / Désactiver'
+    ui_item '3) Désinstaller'
+    ui_item '4) Journal'
+    ui_item '5) Vérifier les interfaces Sinden'
+    echo
+    ui_item '0) Retour'
+    ui_item 'Q) Quitter le gestionnaire'
+    choice="$(read_key 'Votre choix : ')" || return 0
+    [[ "$choice" == __ESC__ ]] && continue
+    case "$choice" in
+      1)
+        if confirm 'Installer le service Sinden Exit Combo ?'; then
+          sinden_installer_exec install || ui_print warning '[ATTENTION] Installation non terminée.'
+        else echo '[INFO] Annulé.'; fi
+        pause ;;
+      2)
+        if [[ "$state" != X ]]; then
+          ui_print warning '[INFO] Service absent ou non reconnu.'
+        elif batocera-services status sinden_exit_combo >/dev/null 2>&1; then
+          if confirm 'Désactiver le raccourci Sinden ?'; then
+            batocera-services disable sinden_exit_combo && batocera-services stop sinden_exit_combo
+          fi
+        else
+          batocera-services enable sinden_exit_combo && batocera-services start sinden_exit_combo
+        fi
+        pause ;;
+      3)
+        if [[ "$state" != X ]]; then
+          ui_print warning '[INFO] Service absent ou non reconnu : aucune suppression.'
+        elif confirm 'Désinstaller Sinden Exit Combo (sauvegardes conservées) ?'; then
+          sinden_installer_exec --uninstall || ui_print warning '[ATTENTION] Désinstallation non terminée.'
+        fi
+        pause ;;
+      4)
+        if [[ -f /userdata/system/logs/sinden-exit-combo.log ]]; then
+          tail -n 25 /userdata/system/logs/sinden-exit-combo.log
+        else
+          ui_print info '[INFO] Aucun journal Sinden.'
+        fi
+        pause ;;
+      5)
+        if [[ -s /userdata/system/sinden-exit-combo.py ]]; then
+          python3 /userdata/system/sinden-exit-combo.py --devices || true
+        else
+          ui_print info '[INFO] Installer le service pour vérifier les interfaces.'
+        fi
+        pause ;;
+      0) return 0 ;;
+      q|Q) exit 0 ;;
+      *) ui_print warning 'Choix invalide.'; sleep 1 ;;
+    esac
+  done
+}
+
 # ============= FIN MODULE 1FICHIER =============
 
 # Ecran d'accueil : le bandeau reste seul a l'ecran jusqu'a une touche.
