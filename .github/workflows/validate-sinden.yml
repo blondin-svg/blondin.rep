@@ -1,0 +1,41 @@
+name: Validate Sinden Exit Combo (Batocera 44)
+on:
+  push:
+    paths:
+      - "SindenExitCombo/**"
+      - "gestionnaire-batocera-v3.0.18-TEST.sh"
+      - ".github/workflows/validate-sinden.yml"
+  pull_request:
+    paths:
+      - "SindenExitCombo/**"
+      - "gestionnaire-batocera-v3.0.18-TEST.sh"
+      - ".github/workflows/validate-sinden.yml"
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shell syntax
+        run: |
+          bash -n gestionnaire-batocera-v3.0.18-TEST.sh
+          sh -n SindenExitCombo/install-sinden-exit-combo-v1.0.sh
+      - name: Extract and check embedded Python/service
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import ast
+          source=Path("SindenExitCombo/install-sinden-exit-combo-v1.0.sh").read_text()
+          program=source.split("cat > \"$newpy\" <<'SINDEN_PY'\n",1)[1].split("\nSINDEN_PY\n",1)[0]
+          service=source.split("cat > \"$newservice\" <<'SINDEN_SERVICE'\n",1)[1].split("\nSINDEN_SERVICE\n",1)[0]
+          ast.parse(program)
+          assert "KEY_1 = 3" in program
+          assert "BTN_LEFT = 272" in program
+          assert "SINDEN_PHYSICAL_PAIR_REAL_CODES_V1" in program
+          assert "['hotkeygen', '--send', 'exit']" in program
+          assert "sinden-exit-combo.py" in service
+          manager=Path("gestionnaire-batocera-v3.0.18-TEST.sh").read_text()
+          assert "sinden_menu(){" in manager
+          assert "installation_status sinden" in manager
+          assert "8) sinden_menu ;;" in manager
+          print("Syntax and Sinden integration markers OK")
+          PY
