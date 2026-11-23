@@ -101,9 +101,32 @@ fi
 # Ne reecrit pas les fichiers .keys ni les visuels : ils restent en place.
 # Si gamelist est absent, ajoute seulement une entree; sinon met a jour l'entree du Gestionnaire.
 python3 - "$PORTS" <<'PYGAMELISTV4'
-import os,sys,tempfile,xml.etree.ElementTree as ET
+import os,sys,json,tempfile,xml.etree.ElementTree as ET
 from pathlib import Path
 ports=Path(sys.argv[1]); path=ports/'gamelist.xml'
+# Préserver les réglages manette existants. Sur une installation vierge,
+# reprendre les contrôles Ports du kit hors ligne v3.0.17.
+keys=ports/'Gestionnaire Batocera.sh.keys'
+if not keys.exists() and not keys.is_symlink():
+    actions=[('up','KEY_UP'),('down','KEY_DOWN'),('left','KEY_LEFT'),('right','KEY_RIGHT'),
+             ('joystick1up','KEY_UP'),('joystick1down','KEY_DOWN'),
+             ('joystick1left','KEY_LEFT'),('joystick1right','KEY_RIGHT'),
+             ('b','KEY_ENTER'),('a','KEY_0'),('start','KEY_ENTER'),
+             ('pageup','KEY_PAGEUP'),('pagedown','KEY_PAGEDOWN')]
+    cfg={'actions_player1':[{'trigger':t,'type':'key','target':v} for t,v in actions]}
+    fd,tmp=tempfile.mkstemp(prefix='.blondin-v4-pad-',dir=ports)
+    try:
+        with os.fdopen(fd,'w',encoding='utf-8') as out:
+            json.dump(cfg,out,ensure_ascii=False,indent=2)
+            out.write('\n');out.flush();os.fsync(out.fileno())
+        os.replace(tmp,keys)
+    finally:
+        if os.path.exists(tmp):os.unlink(tmp)
+    print('[OK] Contrôles manette Ports installés.')
+elif keys.is_file() and not keys.is_symlink():
+    print('[OK] Contrôles manette Ports existants conservés.')
+else:
+    print('[ATTENTION] Fichier manette .keys non régulier : aucune modification.',file=sys.stderr)
 try:
     tree=ET.parse(path) if path.is_file() else ET.ElementTree(ET.Element('gameList'))
     root=tree.getroot()
