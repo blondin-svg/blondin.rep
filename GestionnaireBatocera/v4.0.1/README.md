@@ -1,26 +1,31 @@
-# Gestionnaire Batocera ★ BLONDIN EDITION ★ v4.0.1 TEST
+# Gestionnaire Batocera ★ BLONDIN EDITION ★ v4.0.1 TEST — version complète
 
-Batocera 44 uniquement. Mise à jour ciblée de la v4.0 TEST, y compris une installation déjà corrigée manuellement.
+Batocera 44 uniquement (Mini-PC et Steam Deck OLED). Installation directe, même depuis la v3.0.17 ou sur une installation vierge. Aucune installation préalable de la v4.0 nécessaire.
 
-- Téléchargement 1fichier : HTTPS sur 8766 (lancement, vérification, liens, moteur embarqué et empreinte).
-- Sauvegarde 1fichier : port 8765 inchangé.
-- Notifications extinction ntfy : port 18765 inchangé.
-- Patch LinuxLoader / Lindbergh, Sinden, ordre des systèmes et autres fonctionnalités conservés.
-- Jeton Web, certificats, clé API et réglages existants conservés.
-- Sauvegarde des fichiers modifiés et vérification Bash/Python avant remplacement.
-
-## Installation / mise à jour GitHub (SSH, root)
+## Installation GitHub (SSH root)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/GestionnaireBatocera/v4.0.1/install-gestionnaire-v4.0.1-TEST.py -o /tmp/install-gestionnaire-v4.0.1-TEST.py && python3 /tmp/install-gestionnaire-v4.0.1-TEST.py --online
+curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/GestionnaireBatocera/v4.0.1/install-v4.0.1.sh -o /tmp/install-v4.0.1.sh && bash /tmp/install-v4.0.1.sh --online
 ```
 
-L'option --online installe d'abord la base officielle v4.0 seulement si le gestionnaire est absent. Si une version différente est installée, la mise à jour refuse une source non reconnue. Pour une installation hors ligne, installer la base v4.0 depuis son kit local si nécessaire, puis exécuter le fichier Python sans --online.
+## Installation locale
 
-Quitter le gestionnaire avant l'installation puis le relancer. Aucun service n'est arrêté automatiquement. Si le Web de téléchargement utilisait encore 8765, le redémarrer depuis son menu.
+Placer les six modules, le manifeste et install-v4.0.1.sh ensemble dans /userdata/saves/Installscripts/gestionnaire-batocera-hors-ligne-v4.0.1, puis :
 
-## Vérifications
+```bash
+bash /userdata/saves/Installscripts/gestionnaire-batocera-hors-ligne-v4.0.1/install-v4.0.1.sh
+```
 
-Sources v4.0 contrôlées : huit références Web et empreinte SHA-256 du moteur d'origine confirmées. Simulations de mise à jour avec ports initiaux 8765 et 8766 réussies ; validation sur matériel réel à effectuer. Le fichier distribué est un installateur de mise à jour, pas un nouveau kit autonome complet.
+Le kit local ne nécessite pas Internet pour installer le gestionnaire ; certaines fonctions du gestionnaire téléchargent ensuite leurs propres dépendances, comme en v4.0. Les patchs existants ne sont pas désinstallés ou appliqués automatiquement.
 
-SHA-256 de l'installateur : `68d9785c8032a96d276f912dbf87bd6f84eeb4adf32a35207331486d69c6a29c`.
+## Nouveautés
+
+- Téléchargement 1fichier HTTPS sur 8766, y compris le moteur embarqué et sa vérification d'intégrité.
+- Sauvegarde 1fichier HTTP 8765, notifications ntfy 18765 : inchangées.
+- Patch LinuxLoader / Lindbergh (Rambo), Sinden Lightgun et ordre des systèmes : conservés.
+- Sauvegarde automatique des fichiers remplacés ; jeton Web, clé API, contrôles manette et visuels conservés.
+- Le moteur de téléchargement déjà installé est migré seulement s'il correspond à l'empreinte officielle connue.
+
+Quitter le gestionnaire avant l'installation. Relancer depuis Ports ; si l'ancien serveur de téléchargement tournait sur 8765, le redémarrer depuis son menu. Aucun redémarrage de Batocera nécessaire. L'ancien installateur Python de mise à jour ne constitue pas la version complète.
+
+Contrôles syntaxiques et moteur embarqué testés hors Batocera ; validation sur matériel réel à effectuer.
