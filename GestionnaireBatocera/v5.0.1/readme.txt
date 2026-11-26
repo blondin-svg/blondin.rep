@@ -55,7 +55,7 @@ Gestionnaire nécessitent cependant une connexion Internet.
 
 Commande permanente (dernière version officielle publiée) :
 
-bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/install-gestionnaire.sh | bash'
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/GestionnaireBatocera/install-gestionnaire.sh | bash'
 
 Le lanceur vérifie le kit avant de l'exécuter. Son lien ne
 change pas lors des mises à jour. La commande versionnée
