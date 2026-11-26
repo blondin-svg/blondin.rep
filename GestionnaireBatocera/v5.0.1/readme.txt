@@ -52,6 +52,15 @@ Gestionnaire nécessitent cependant une connexion Internet.
 
 4. INSTALLATION DEPUIS GITHUB
 ------------------------------------------------------------
+
+Commande permanente (dernière version officielle publiée) :
+
+bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/install-gestionnaire.sh | bash'
+
+Le lanceur vérifie le kit avant de l'exécuter. Son lien ne
+change pas lors des mises à jour. La commande versionnée
+ci-dessous reste disponible pour installer précisément la v5.0.1.
+
 Fermer le Gestionnaire, puis exécuter en SSH (root) :
 
 curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/GestionnaireBatocera/v5.0.1/install-gestionnaire-v5.0.1-COMPLET.py -o /tmp/install-gestionnaire-v5.0.1-COMPLET.py && python3 /tmp/install-gestionnaire-v5.0.1-COMPLET.py
