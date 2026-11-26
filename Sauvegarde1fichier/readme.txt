@@ -23,6 +23,7 @@ Ne pas interrompre l'installation ; redémarrage prévu sur Batocera.
 NOUVEAUTÉS DE LA V4.0
 - Style des menus harmonisé avec le Gestionnaire Batocera v5.0.1 :
   fond bleu foncé, sélection cyan, flèche jaune, retour séparé.
+- Pointeur cyan avec contour blanc, ressources xterm locales.
 - Navigation souris, clavier et manette.
 - Molette : choix précédent/suivant dans les menus.
 - Clic gauche : validation du choix surligné, indépendamment du pointeur.

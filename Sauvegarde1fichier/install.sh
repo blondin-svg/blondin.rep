@@ -2,8 +2,8 @@
 # Sauvegarde 1fichier ★ BLONDIN EDITION ★ — v4.0
 set -Eeuo pipefail
 INSTALL_URL='https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-1fichier-v4.0-COMPLET-AUTONOME.sh'
-INSTALL_GIT_BLOB='0e8f5d8dfdf1af2d66fb8de3dd7dc9f2cbe65f81'
-INSTALL_SIZE=2621240
+INSTALL_GIT_BLOB='6f59683510162dce504056459d26aed66110ed42'
+INSTALL_SIZE=2624288
 if [[ "$(id -u)" -ne 0 ]] || ! grep -qi batocera /etc/os-release || ! grep -Eq '(^|[^0-9])44([^0-9]|$)' /etc/os-release; then
   echo '[ERREUR] Batocera 44 et SSH root requis.' >&2
   exit 1

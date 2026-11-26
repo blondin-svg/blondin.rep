@@ -1119,6 +1119,61 @@ fi # fin de la construction complete pour installation neuve
 echo '[ETAPE v4.0] Interface harmonisee, souris, manette, journaux et defilement.'
 blondin_346_stage "$BASE"
 
+python3 - "$BASE" "$PORT" <<'PY_V400_XTERM'
+# Local xterm resources: no global changes, preserve existing launcher and resolution.
+import os, re, shlex, shutil, subprocess, sys, tempfile, time
+from pathlib import Path
+base,port=map(Path,sys.argv[1:3]);resource=base/'xterm-v4.0.ad'
+if base.is_symlink() or port.is_symlink() or not port.is_file() or resource.is_symlink():
+    raise SystemExit('[ERREUR] Chemin du lanceur xterm inattendu.')
+old=port.read_text(encoding='utf-8')
+if not re.match(r'^#![^\n]*(?:bash|sh)(?:\s|$)',old):
+    raise SystemExit('[ERREUR] Lanceur Ports inconnu.')
+settings=r'''! BLONDIN-V400-XTERM - local to the 1fichier launcher
+XTerm*background: black
+XTerm*foreground: white
+XTerm*faceName: DejaVu Sans Mono
+XTerm*pointerShape: left_ptr
+XTerm*pointerColor: #55d9ee
+XTerm*pointerColorBackground: white
+XTerm*omitTranslation: select,block-select,wheel-mouse
+XTerm*VT100.translations: #override \n Shift <Btn4Down>: scroll-back(3,line) \n Shift <Btn5Down>: scroll-forw(3,line) \n <Btn4Up>: string("") \n <Btn5Up>: string("") \n Shift <Btn1Down>: select-start() \n Shift <Btn1Motion>: select-extend() \n Shift <Btn1Up>: select-end(CLIPBOARD,PRIMARY) \n Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n Ctrl Shift <Key>V: insert-selection(CLIPBOARD) \n Shift <Key>Insert: insert-selection(CLIPBOARD,PRIMARY)
+XTerm*highlightSelection: true
+XTerm*highlightColor: #23434a
+XTerm*highlightTextColor: white
+'''
+marker='# BLONDIN-V400-XTERM'
+if marker in old:
+    pattern=r'(?m)^# BLONDIN-V400-XTERM\nexport XENVIRONMENT=[^\n]+\n'
+    old_clean,n=re.subn(pattern,'',old)
+    if n!=1:raise SystemExit('[ERREUR] Marqueur lanceur xterm ambigu.')
+else:old_clean=old
+pos=old_clean.index('\n')+1
+new=old_clean[:pos]+marker+'\nexport XENVIRONMENT='+shlex.quote(str(resource))+'\n'+old_clean[pos:]
+if old==new and resource.is_file() and resource.read_text(encoding='utf-8')==settings:
+    print('[OK] Ressources xterm v4.0 deja presentes.');sys.exit(0)
+subprocess.run(['bash','-n'],input=new,text=True,check=True)
+backup=base/'backups'/('avant-xterm-v400-'+time.strftime('%Y%m%d-%H%M%S')+'-'+str(os.getpid()))
+if backup.parent.is_symlink():raise SystemExit('[ERREUR] Dossier sauvegarde xterm inattendu.')
+backup.mkdir(parents=True,exist_ok=False);shutil.copy2(port,backup/'lanceur.sh')
+if resource.is_file():shutil.copy2(resource,backup/'xterm-v4.0.ad')
+def atomic(path,data,mode):
+    fd,tmp=tempfile.mkstemp(dir=path.parent,prefix='.v400-xterm-')
+    try:
+        with os.fdopen(fd,'w',encoding='utf-8',newline='\n') as f:f.write(data);f.flush();os.fsync(f.fileno())
+        os.chmod(tmp,mode);os.replace(tmp,path)
+    finally:Path(tmp).unlink(missing_ok=True)
+try:
+    atomic(resource,settings,0o644)
+    atomic(port,new,port.stat().st_mode&0o777)
+except BaseException:
+    shutil.copy2(backup/'lanceur.sh',port)
+    if (backup/'xterm-v4.0.ad').is_file():shutil.copy2(backup/'xterm-v4.0.ad',resource)
+    else:resource.unlink(missing_ok=True)
+    raise
+print('[OK] Style xterm v4.0 et pointeur configures pour ce lanceur.')
+PY_V400_XTERM
+
 if [[ -z "${BLONDIN_TEST_ROOT:-}" && -f "$SVC" ]]; then
   if command -v batocera-services >/dev/null 2>&1; then
     batocera-services enable Sauvegarde1fichierMobile || echo '[ATTENTION] Activation service au demarrage non confirmee.' >&2
