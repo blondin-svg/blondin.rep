@@ -402,8 +402,8 @@ PYGEO
 # Motif hints are advisory; the compositor is free to ignore them.
 exec xterm -bg black -fg white -fa 'DejaVu Sans Mono' -fs "$fs" \
   -geometry "${cols}x${rows}+${x}+${y}" -xrm 'XTerm*pointerShape: left_ptr' -xrm 'XTerm*pointerColor: #55d9ee' -xrm 'XTerm*pointerColorBackground: white' +bc +sb -b 2 -bw 0 -sl 5000 \
-  -xrm 'XTerm*omitTranslation: select,block-select' \
-  -xrm 'XTerm*VT100.translations: #override \n Shift <Btn1Down>: select-start() \n Shift <Btn1Motion>: select-extend() \n Shift <Btn1Up>: select-end(CLIPBOARD,PRIMARY) \n Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n Ctrl Shift <Key>V: insert-selection(CLIPBOARD) \n Shift <Key>Insert: insert-selection(CLIPBOARD,PRIMARY)' \
+  -xrm 'XTerm*omitTranslation: select,block-select,wheel-mouse' \
+  -xrm 'XTerm*VT100.translations: #override \n <Btn4Up>: string("") \n <Btn5Up>: string("") \n Shift <Btn1Down>: select-start() \n Shift <Btn1Motion>: select-extend() \n Shift <Btn1Up>: select-end(CLIPBOARD,PRIMARY) \n Ctrl Shift <Key>C: copy-selection(CLIPBOARD) \n Ctrl Shift <Key>V: insert-selection(CLIPBOARD) \n Shift <Key>Insert: insert-selection(CLIPBOARD,PRIMARY)' \
   -xrm 'XTerm*highlightSelection: true' -xrm 'XTerm*highlightColor: #23434a' -xrm 'XTerm*highlightTextColor: white' \
   -title 'Gestionnaire Batocera - BLONDIN EDITION' -e /bin/bash -c '
     if [[ "${WINDOWID:-}" =~ ^[0-9]+$ ]] && command -v xprop >/dev/null 2>&1; then
