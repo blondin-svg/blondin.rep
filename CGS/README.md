@@ -1,24 +1,27 @@
-# CGS multi-sources
+# CGS Multi-sources — Batocera 44
 
-Installateurs CGS personnels pour Batocera.
+Ce dossier contient le patch CGS Multi-sources V2.1 de BLONDIN EDITION, utilisé par le Gestionnaire Batocera v5.0 et v5.0.1.
 
-## Fichiers à placer dans ce dossier
+## Installation
 
-- `CGS_MiniPC.zip`
-- `CGS_SteamDeck.zip`
+Dans le Gestionnaire Batocera :
+- Jeux et émulation > Jeux > CGS > Installer / réinstaller CGS (application principale).
+- Jeux et émulation > Jeux > CGS > Patch Multi-sources V2.1.
+- Choisir Installer / Réparer CGS, puis les visuels si souhaités.
 
-## Mini PC / Batocera 42
+Le patch est aussi accessible par Correctifs et patchs > CGS Multi-sources.
 
-```bash
-wget -qO- https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/CGS/install-minipc.sh | bash
-```
+Le Gestionnaire télécharge et vérifie les fichiers de MultiSources/ et utilise son cache local valide en secours.
 
-## Steam Deck OLED / Batocera 43.1
+## Ressources conservées
 
-```bash
-wget -qO- https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/CGS/install-steamdeck.sh | bash
-```
+- `MultiSources/gestion-cgs-multisources-v2.1-TEST.sh`
+- `MultiSources/cgs-multisource-patch.py`
+- `MultiSources/cgs-artwork.py`
+- `MultiSources/artwork/` : logo, fanart et miniature.
 
-Les lanceurs téléchargent le ZIP correspondant dans `/tmp`, exécutent l'installation puis suppriment les fichiers temporaires. Il n'est donc plus nécessaire de conserver l'installateur dans `/userdata/saves/Installscripts`.
+Ne pas publier auth.json ni les identifiants du compte CGS sur ce dépôt public.
 
-Le dépôt est public : `auth.json` n'est volontairement jamais publié. Le compte CGS déjà présent sur la machine est conservé ; après une installation neuve, la connexion se fait normalement dans CGS.
+Les anciens installateurs ZIP Mini-PC (Batocera 42) et Steam Deck (Batocera 43.1) ont été retirés de main. Ils restent accessibles dans la [branche d'archivage](https://github.com/blondin-svg/blondin.rep/tree/archives/avant-nettoyage-2026-11-26/CGS).
+
+Le patch conserve son appellation TEST. Les opérations sur Batocera restent à effectuer depuis le Gestionnaire.
