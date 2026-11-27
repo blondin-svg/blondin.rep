@@ -1,18 +1,18 @@
 SAUVEGARDE 1FICHIER ★ BLONDIN EDITION ★
-Version 4.0 — complète et autonome — Batocera 44
+Version 4.1 — complète et autonome — Batocera 44
 
 INSTALLATION
 Depuis GitHub, en SSH root :
 bash -o pipefail -c 'curl -fsSL https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install.sh | bash'
 
-Le lanceur télécharge la v4.0 dans /tmp, contrôle sa taille,
+Le lanceur télécharge la v4.1 dans /tmp, contrôle sa taille,
 son empreinte Git et sa syntaxe Bash avant exécution.
 
 Installation locale (copier le fichier dans Installscripts) :
-bash /userdata/saves/Installscripts/install-1fichier-v4.0-COMPLET-AUTONOME.sh
+bash /userdata/saves/Installscripts/install-1fichier-v4.1-COMPLET-AUTONOME.sh
 
 Téléchargement direct :
-https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-1fichier-v4.0-COMPLET-AUTONOME.sh
+https://raw.githubusercontent.com/blondin-svg/blondin.rep/main/Sauvegarde1fichier/install-1fichier-v4.1-COMPLET-AUTONOME.sh
 
 Ce fichier autonome contient les modules nécessaires à une installation
 neuve ou à une mise à jour. Il ne requiert pas le Gestionnaire Batocera.
@@ -20,7 +20,14 @@ Ne pas installer pendant une sauvegarde, une vérification ou un renvoi
 de media.zip. Sauvegarder les paramètres avant la mise à jour.
 Ne pas interrompre l'installation ; redémarrage prévu sur Batocera.
 
-NOUVEAUTÉS DE LA V4.0
+NOUVEAUTÉS DE LA V4.1
+- Sélection de la catégorie (Arcade, Consoles, Ordinateurs) à l'ajout
+  et à la modification d'un système, sur Batocera et sur le Web.
+- Confirmation avant reclassement ; les anciennes archives restent en place.
+- Les prochaines sauvegardes utilisent la nouvelle destination.
+- Correction de l'installation autonome sur environnement vierge.
+
+NOUVEAUTÉS DE LA V4.0 (CONSERVÉES)
 - Style des menus harmonisé avec le Gestionnaire Batocera v5.0.1 :
   fond bleu foncé, sélection cyan, flèche jaune, retour séparé.
 - Pointeur cyan avec contour blanc, ressources xterm locales.
@@ -31,7 +38,7 @@ NOUVEAUTÉS DE LA V4.0
 - Clic droit / B / Échap : retour ; Q ou B à l'accueil : quitter.
 - Journaux et résultats : molette, flèches et Page Up/Page Down ;
   titre et retour fixes, clic hors du bouton Retour sans fermeture.
-- Numéro de version v4.0 dans Batocera et l'interface Web.
+- Numéro de version affiché dans Batocera et l'interface Web.
 - Moteur 1fichier et fonctionnalités v3.4.7 conservés.
 
 FONCTIONS
@@ -46,13 +53,14 @@ http://IP_DU_BATOCERA:8765
 Ne pas exposer directement le port 8765 sur Internet.
 
 VALIDATION
-Les transformations Python et les scénarios de navigation ont été
-vérifiés sur un terminal simulé. Les essais sur Batocera 44 réel,
+Installation vierge, migration depuis la v4.0 et réinstallation,
+formulaires de catégories et conservation des réglages vérifiés en simulation. Les essais sur Batocera 44 réel,
 notamment xterm et la souris physique, restent à effectuer.
 Aucun transfert de sauvegarde n'est déclenché par l'installation.
 
 VERSIONS CONSERVÉES
-v4.0 : version actuelle, complète et autonome.
+v4.1 : version actuelle, complète et autonome.
+v4.0 : version précédente, conservée.
 v3.4.7 TEST et v3.4.6 TEST : versions de secours historiques.
 sources/ : sources historiques conservées.
 Archives : https://github.com/blondin-svg/blondin.rep/tree/archives/avant-nettoyage-2026-11-26/Sauvegarde1fichier
